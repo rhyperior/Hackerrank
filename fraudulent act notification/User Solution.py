@@ -26,7 +26,7 @@ def activityNotifications(expenditure, d):
 
 if __name__ == '__main__':
     # fptr = open(os.environ['OUTPUT_PATH'], 'w')
-    fptr = open(r'D:\\Trial_Projects_Python\\Hackerrank\\fraudulent act notification\\input01.txt', 'r')
+    fptr = open(r'D:\\Trial_Projects_Python\\Hackerrank\\fraudulent act notification\\input01.txt', 'r')    #Test case file
 
     first_multiple_input = fptr.read().rstrip().split('\n')
     

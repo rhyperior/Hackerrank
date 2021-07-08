@@ -1,11 +1,12 @@
 #!/bin/python3
-
+import time
+start_time = time.time()
 import math
 import os
 import random   
 import re
 import sys
-
+from bisect import insort_left, bisect_left
 #
 # Complete the 'activityNotifications' function below.
 #
@@ -23,20 +24,33 @@ def activityNotifications(expenditure, d):
         if(d >= n):
             return 0
         else:
-            if d % 2 == 0:
-                for index in range(0, n-d):
-                    expense = sorted(expenditure[index:index+d])
-                    print(len(expense))
-                    print(int(d/2)+index)
-                    median = (expense[int(d/2) -1] + expense[int(d/2)])/2
-                    if expenditure[d+index] >= 2*median :
-                             notif+=1
-            else:
-                for index in range(0, n-d):
-                    expense = sorted(expenditure[index:index+d])
+            # if d % 2 == 0:
+            #     for index in range(0, n-d):
+            #         expense = sorted(expenditure[index:index+d])
+            #         print(len(expense))
+            #         print(int(d/2)+index)
+            #         median = (expense[int(d/2) -1] + expense[int(d/2)])/2
+            #         if expenditure[d+index] >= 2*median :
+            #                  notif+=1
+            # else:
+            #     for index in range(0, n-d):
+            #         expense = sorted(expenditure[index:index+d])
+            #         median = expense[int(d/2)]
+            #         if expenditure[d+index] >= 2*median :
+            #                  notif+=1
+            expense = sorted(expenditure[0:d])
+            for index in range(0, n-d):
+                if d % 2 == 0:
+                    median = (expense[int(d/2) - 1] + expense[int(d/2)])/2
+                else:
                     median = expense[int(d/2)]
-                    if expenditure[d+index] >= 2*median :
-                             notif+=1
+
+                if expenditure[d + index] >= 2*median:
+                    notif+=1
+                
+                del expense[bisect_left(expense, expenditure[index])]
+                insort_left(expense, expenditure[d+index])
+
         print(notif)                     
         return notif
                         
@@ -60,4 +74,5 @@ if __name__ == '__main__':
 
     # fptr.write(str(result) + '\n')
 
-    # fptr.close()
+    fptr.close()
+    print("Time:-- %s seconds"% (time.time() - start_time))
