@@ -13,7 +13,6 @@ def sixth_digit(N: int, numbers: list):
                 sum += int(index / (pow(10, j)))
                 index = index % (pow(10, j))
                 # print(f"Sum : {sum} -- index: {index}")
-            # if (sum<=9):   break
             
             index = sum
 
