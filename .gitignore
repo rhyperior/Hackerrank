@@ -1,6 +1,7 @@
-*venv
+*venv*
 *history
 *.csv
 *.xlsx
 .vscode
 __pycache*
+*.pkl
