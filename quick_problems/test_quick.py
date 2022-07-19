@@ -8,6 +8,7 @@ import datetime
 from bisect import bisect
 from bisect import bisect_left, bisect_right
 from typing import List
+import pandas as pd
 
 # class Solution:
 #     def twoSum(self, nums: List[int], target: int) -> List[int]:
@@ -56,12 +57,6 @@ class Solution:
 
 if __name__=="__main__":
     
-    start_list = [2,7,11,15]
-    # start_list = [3,2,3]
-    # start_list = [3,3]
-    start_list = [3,2,4]
-    target = 6
-    obj = Solution()
-    pos = obj.twoSum(nums=start_list, target=target)
-
-    print("done")
+   url = 'https://www.basketball-reference.com/playoffs/2022-nba-finals-celtics-vs-warriors.html'
+   nba_tables = pd.read_html(url)
+   print(nba_tables[0])
