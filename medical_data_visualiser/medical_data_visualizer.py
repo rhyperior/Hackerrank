@@ -6,32 +6,36 @@ import numpy as np
 # Import data
 df = pd.read_csv(r'./medical_data_visualiser/medical_examination.csv')
 
-# Add 'overweight' column
-BMI = df['weight'] / (df['height'] * df['height']) * 10000
-df['overweight'] = BMI.apply(lambda x : 1 if x > 25 else 0)
 
-# print(df.head())
-# Normalize data by making 0 always good and 1 always bad. If the value of 'cholesterol' or 'gluc' is 1, make the value 0. If the value is more than 1, make the value 1.
-
-df['cholesterol'] = df['cholesterol'].apply(lambda x: 1 if x > 1 else 0 )
-df['gluc'] = df['gluc'].apply(lambda x: 1 if x > 1 else 0 )
-data = df
-# # df1 = df.query('cardio == 0')
-# # df2 = df.query('cardio == 1')
 
 
 
 # # Draw Categorical Plot
 def draw_cat_plot():
+    # df = data
+        # Add 'overweight' column
+    BMI = df['weight'] / (df['height'] * df['height']) * 10000
+    df['overweight'] = BMI.apply(lambda x : 1 if x > 25 else 0)
+
+    # print(df.head())
+    # Normalize data by making 0 always good and 1 always bad. If the value of 'cholesterol' or 'gluc' is 1, make the value 0. If the value is more than 1, make the value 1.
+    if len(list(df['cholesterol'].unique())) > 2:
+        df['cholesterol'] = df['cholesterol'].apply(lambda x: 1 if x > 1 else 0 )
+        df['gluc'] = df['gluc'].apply(lambda x: 1 if x > 1 else 0 )
+    # data = df
+    # # df1 = df.query('cardio == 0')
+    # # df2 = df.query('cardio == 1')
     # Create DataFrame for cat plot using `pd.melt` using just the values from 'cholesterol', 'gluc', 'smoke', 'alco', 'active', and 'overweight'.
 
     df_cat = pd.melt(df, value_vars = ['gluc', 'smoke', 'active', 'alco', 'cholesterol', 'overweight'], id_vars = ['cardio'])
+
     g = sns.catplot(data = df_cat, x = 'variable', kind = 'count', hue = 'value', col = 'cardio', order = ['active', 'alco', 'cholesterol', 'gluc', 'overweight', 'smoke'])
     g.set_ylabels('total')
+    print(dir(g))
+    g = g.figure
+
     
-    ong_df = pd.melt(df, value_vars = ['gluc', 'smoke', 'active', 'alco', 'cholesterol', 'overweight'], id_vars = ['cardio'])
-    g = sns.catplot(data = df_cat, x = 'variable', kind = 'count', hue = 'value', col = 'cardio', order = ['active', 'alco', 'cholesterol', 'gluc', 'overweight', 'smoke'])
-    g.set_ylabels('total')  
+     
 
     # Group and reformat the data to split it by 'cardio'. Show the counts of each feature. You will have to rename one of the columns for the catplot to work correctly.
     # df_cat = None
@@ -48,17 +52,16 @@ def draw_cat_plot():
 # Draw Heat Map
 def draw_heat_map():
     # Clean the data
-    df = data
-    df = df.query('ap_lo <= ap_hi') #corrected diastolic.
+    global df
+
+   
+    df_heat = df[ (df['ap_lo'] <= df['ap_hi']) &
+                  (df['height'] >= df['height'].quantile(0.025)) &
+                  (df['height'] <= df['height'].quantile(0.975)) &
+                  (df['weight'] >= df['weight'].quantile(0.025)) &
+                  (df['weight'] <= df['weight'].quantile(0.975))]
+
     
-    #Corrected Height.
-    df = df[(data['height'] >= data['height'].quantile(0.025)) & (data['height'] <= data['height'].quantile(0.975))]
-
-    #Corrected Weight.
-    df = df[(data['weight'] >= data['weight'].quantile(0.025)) & (data['weight'] <= data['weight'].quantile(0.975))]
-
-    df_heat = df
-
     # Calculate the correlation matrix
     corr = df_heat.corr()
 
